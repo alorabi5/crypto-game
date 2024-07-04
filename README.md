@@ -4,6 +4,11 @@
 ## About
 The idea of ​​the game is for the player to invest in the cryptocurrency market to increase his budget so that he can live the luxurious life he aspires to. But he must avoid loss so that his Net Worth is not less than his Liabilities and he eventually declares bankruptcy and loses.
 
+## User Story
+The player will start the game with **$100,000** ***Net Worth***. And his ***Liabilities*** is ***40%*** of his ***Net Worth***. This mean the player have ***60%*** ***Budget*** and have a choice to buy the ***Luxury Item*** to go to the next ***Luxury Level*** or take the risk and buy cryptocurrency and get a chance to increases his ***Net Worth***, this leading to increases his ***Budget*** and ***Liabilities*** also. When the player rach the final level of ***Luxury Level*** the player will win. Other wise when player stumbled and lost in the cryptocurrency market and his ***Net Worth*** become less then his ***Liabilities***, the player will went bankrupt and lost the game.
+
+> **Tip**: The amount of ***Liabilities*** will be fixed if the player's ***Net Worth*** decreases.
+
 ## Implementation
 
 ### 1. objects
