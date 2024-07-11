@@ -5,16 +5,20 @@ const itemPriceEl = document.querySelector('#itemPrice');
 const imgEl = document.querySelector('.lexury img');
 const tableEl = document.querySelector('#dyTable');
 const walletEl = document.querySelectorAll(".crypto-wallet p");
-const budgetEl = document.querySelector('#budget');
+const cashEl = document.querySelector('#cash');
 const errorEl = document.querySelector('#error');
 const buyItemBtn = document.querySelector('#buyItem');
+const timerEl = document.querySelector('#timer');
+const audio = document.createElement('audio');
+const budgetEl = document.querySelector('#budget');
+const restartEl = document.querySelector('#restartBtn');
 
 let buyBtnEls = [];
 let sellBtnEls = [];
 let priceEls = [];
 let percentageEls = [];
 let luxuryIdx = 0;
-
+let timerStarted = false;
 
 
 
@@ -55,10 +59,11 @@ const crypto = [
 
 const player = {
     netWorth: null,
-    budget: null,
+    cash: null,
     liabilities: null,
     currentLevel: null,
-    cryptoWallet: null
+    cryptoWallet: null,
+    budget: null
 };
 
 const luxury = [
@@ -85,6 +90,8 @@ const getRandomPercentage = () => {
     
     return getRandomNum(3) * 10;
 };
+
+
 
 const priceFormat = (price) => {
 
@@ -167,45 +174,59 @@ const setLuxuryItem = (luxuryItem) => {
 const init = () => {
 
     addInTable();
+    timerStarted = false;
     luxuryIdx = 0;
     const luxuryItem = luxury[luxuryIdx];
 
+    // audio.setAttribute('src', '/Audio/Start.mp3');
+    // audio.play();
+
     player.netWorth = 100000;
-    player.budget = player.netWorth * 0.6;
+    player.cash = player.netWorth * 0.6;
     player.liabilities = player.netWorth * 0.4;
     player.cryptoWallet = 0;
+    player.budget = player.cash;
     
     setLuxuryItem(luxuryItem);
 
     liabilitiesEl.textContent = priceFormat(player.liabilities);
     netWorthEl.textContent = priceFormat(player.netWorth);
+    cashEl.textContent = priceFormat(player.cash);
+    timerEl.textContent = 0;
     budgetEl.textContent = priceFormat(player.budget);
 
 };
 
 const buyItem = () => {
     let currentItem = luxury[luxuryIdx];
-    const condition = (player.budget - currentItem.price) >= 0;
+    const condition = (player.cash - currentItem.price) >= 0;
 
     if(condition){
-        player.budget -= currentItem.price;
-        budgetEl.textContent = priceFormat(player.budget);
+        player.cash -= currentItem.price;
+        cashEl.textContent = priceFormat(player.cash);
         luxuryIdx++;
         currentItem = luxury[luxuryIdx];
 
-        if(currentItem)
+        if(currentItem){
             setLuxuryItem(currentItem);
-        else
+            audio.setAttribute('src', '/Audio/levelUp.mp3');
+            audio.play();
+        }
+
+        else{
             luxuryLevelEl.textContent = 'You Are Win!';
+            audio.setAttribute('src', '/Audio/Win.mp3');
+            audio.play();
+        }
 
         
     }
 };
 
 const getProfitLose = () => {
-    const profitLose = ['profit', 'lose', 'profit'];
+    const profitLose = ['profit', 'lose'];
 
-    return profitLose[getRandomNum(3) - 1];
+    return profitLose[getRandomNum(2) - 1];
 };
 
 const setPercentage = (idx) => {
@@ -243,8 +264,8 @@ const getCryptoWallet = () => {
 };
 
 const setNetWorth = () => {
-    player.netWorth = player.budget + getCryptoWallet() + player.liabilities;
-    // player.netWorth = player.budget + getCryptoWallet() + liability;
+    budgetEl.textContent = player.cash + getCryptoWallet();
+    player.netWorth = player.cash + getCryptoWallet() + player.liabilities;
     netWorthEl.textContent = priceFormat(player.netWorth);
 };
 
@@ -252,38 +273,90 @@ const setLiabilities = () => {
     const liabilitiesVal = player.netWorth * 0.4;
     
     if(player.liabilities < liabilitiesVal){
-        // setNetWorth(liabilitiesVal)
+        const diffirent = liabilitiesVal - player.liabilities;
         player.liabilities = liabilitiesVal;
         liabilitiesEl.textContent = priceFormat(liabilitiesVal);
     }
 
-    return player.liabilities;
+    setNetWorth();
 
 };
 
 
+const checkLose = () => {
+    player.budget = player.cash + player.cryptoWallet;
+    budgetEl.textContent = priceFormat(player.budget);
+    const condition = player.budget < player.liabilities;
+    if(condition && luxury[luxuryIdx]){
+        luxuryLevelEl.textContent = `Player Lose`;
+        
+        audio.setAttribute('src', '/Audio/lose.mp3');
+        audio.play();
+    }
+};
+
+const buySellProcess = () => {
+    
+
+    
+        crypto.forEach((el, index) => {
+        
+        setPercentage(index);
+        setPrice(index);
+        });
+
+        setNetWorth();
+        setLiabilities();
+    
+};
+
+const timerProcess = () => {
+    let seconds = 0;
+    const timerAudio = document.createElement('audio');
+    timerEl.textContent = seconds;
+    const intervalId = setInterval(() => {
+        seconds++;
+        
+        timerAudio.setAttribute('src', '/Audio/timer.mp3');
+        timerAudio.play();
+        timerEl.textContent = seconds;
+        
+        if (seconds >= 10) { 
+            clearInterval(intervalId);
+            buySellProcess();
+            checkLose();
+            timerStarted = false;
+            timerAudio.pause();
+            
+        }
+    }, 1000);
+};
+
+const finalProcess = () => {
+    if(!timerStarted){
+        timerStarted = true;
+        timerProcess();
+    }
+};
+
 const buyCrypto = (btn) => {
     const idx = btn.target.id;
-    const condition = (player.budget - crypto[idx].price) >= 0;
+    const condition = (player.cash - crypto[idx].price) >= 0;
     
     if(condition){
         errorEl.hidden = true;
         crypto[idx].quantity++;
-        player.budget -= crypto[idx].price;
+        player.cash -= crypto[idx].price;
 
         walletEl[idx].textContent = crypto[idx].quantity;
-        budgetEl.textContent = priceFormat(player.budget);
+        cashEl.textContent = priceFormat(player.cash);
 
-        setPercentage(idx);
-        setPrice(idx);
-
-        setNetWorth();
-        setLiabilities()
+        finalProcess();
         
     }
     else{
         errorEl.hidden = false;
-        errorEl.textContent = `Your budget is not enough to buy ${crypto[idx].name}.`;
+        errorEl.textContent = `Your cash is not enough to buy ${crypto[idx].name}.`;
     }
 };
 
@@ -295,15 +368,11 @@ const sellCrypto = (btn) => {
         errorEl.hidden = true;
 
         crypto[idx].quantity--;
-        player.budget += crypto[idx].price;
+        player.cash += crypto[idx].price;
         walletEl[idx].textContent = crypto[idx].quantity;
-        budgetEl.textContent = priceFormat(player.budget);
+        cashEl.textContent = priceFormat(player.cash);
         
-        setPercentage(idx);
-        setPrice(idx);
-
-        setNetWorth();
-        setLiabilities();
+        finalProcess();
     }
     else{
         errorEl.hidden = false;
@@ -312,8 +381,16 @@ const sellCrypto = (btn) => {
     
 };
 
+
+
 init();
 
 buyItemBtn.addEventListener('click', buyItem);
 buyBtnEls.forEach(btn => btn.addEventListener('click', buyCrypto));
 sellBtnEls.forEach(btn => btn.addEventListener('click', sellCrypto));
+
+
+
+
+
+

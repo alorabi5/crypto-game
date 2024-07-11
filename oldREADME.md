@@ -9,19 +9,11 @@ The player will start the game with **$100,000** ***Net Worth***. And his ***Lia
 
 > **Tip**: The amount of ***Liabilities*** will be fixed if the player's ***Net Worth*** decreases.
 
-## Technologies Used
-
-The game is made using these technologies:
-
-* HTML
-* CSS
-* Javascript
-
 ## Implementation
 
 ### 1. objects
 
-I create an objects contain:
+I will create an objects contain:
 
 ```Javascript
 const crypto = [
@@ -81,11 +73,3 @@ I will create *Listener* for each button:
 - `buyBtn.addEventListener` to implement action when player *Buy* cryptocurrency or *Luxury* item..
 
 - `sellBtn.addEventListener` to implement action when player *Sell* cryptocurrency.
-
-
-## Next Steps:
-
-* Improve style
-* Add settings
-* Add instructions
-* Less the number of clicks when Buy/Sell Crypyo

@@ -5,11 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script src="app.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Crypto Game</title>
 </head>
 
 <body>
     <div class="main">
+
+    <div class="top">
+        <div class="headItems" id="time">
+            <i class="fa fa-clock-o" aria-hidden="true"></i>
+            <p id="timer"></p>
+        </div>
+        <div class="headItems" id="restartBtn">
+            <i class="fa fa-repeat" aria-hidden="true"></i>
+        </div>
+        <div class="headItems" id="wallet">
+            <i class="fa fa-university" aria-hidden="true"></i>
+            <p id="budget"></p>
+        </div>
+    </div>
+
         <div class="lexury">
             <h2 id="level"></h2>
             <img src="" alt="">
@@ -19,8 +35,9 @@
             </div>
         </div>
 
-        <h3 id="budget"></h3>
+        <h3 id="cash"></h3>
         <p id="error" hidden></p>
+        
         
         <table id="dyTable">
             <tr>
