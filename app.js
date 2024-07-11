@@ -203,9 +203,11 @@ const buyItem = () => {
 
     if(condition){
         player.cash -= currentItem.price;
+        player.budget -= currentItem.price;
         cashEl.textContent = priceFormat(player.cash);
         luxuryIdx++;
         currentItem = luxury[luxuryIdx];
+        budgetEl.textContent = priceFormat(player.budget);
 
         if(currentItem){
             setLuxuryItem(currentItem);
@@ -388,7 +390,9 @@ init();
 buyItemBtn.addEventListener('click', buyItem);
 buyBtnEls.forEach(btn => btn.addEventListener('click', buyCrypto));
 sellBtnEls.forEach(btn => btn.addEventListener('click', sellCrypto));
-
+restartEl.addEventListener('click', ()=> {
+    
+});
 
 
 
