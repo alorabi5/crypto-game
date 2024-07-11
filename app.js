@@ -317,3 +317,4 @@ init();
 buyItemBtn.addEventListener('click', buyItem);
 buyBtnEls.forEach(btn => btn.addEventListener('click', buyCrypto));
 sellBtnEls.forEach(btn => btn.addEventListener('click', sellCrypto));
+
